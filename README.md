@@ -20,7 +20,7 @@ This is a step-by-step walkthrough of the Azure IoT Suite Connected Factory pre-
 4. Now the Connect button should be enabled. You should see the command you could use to establish an SSH session to your Linux VM. If you have Bash on Windows enabled run it. Otherwise use a tool like Putty. 
 	
 5. Take a look under the hood of the Docker containers created by the preconfigured solution. Run docker ps, you will see heaps of containers deployed and running. Each container representing a particular location (with IoT Edge OPC UA publisher and proxy modules, SCADA simulator, and MES simulator.
-![Containers](/img/dockercontainers.png?raw=true "Containers")
+![Containers](/doc/media/dockercontainers.png?raw=true "Containers")
 	
 When you do a ls, you can see shell scripts for startsimulation, stopsimulation and deletesimulation. You can also view config files, logs, and shared volume from the Docker containers. Muck around to create your new SCADA station, with its accompanying Azure IoT Edge proxy and publisher modules.
 	
@@ -28,10 +28,10 @@ When you do a ls, you can see shell scripts for startsimulation, stopsimulation 
 ```
 docker images
 ```
-![images](/img/dockerimages.png?raw=true "images")
+![images](/doc/media/dockerimages.png?raw=true "images")
 
 Some container images are pretty large especially for the OPC UA publisher module. This may require an industrial PC or a specialised IoT field gateway (physical hardware) with a capable processor, RAM, and storage. However you may also run this on a Raspberry Pi 3 for a PoC, just be conscious that the Docker images must be arm-hf ones.
 
 ## OPC UA Integration
 
-If you have a PLC, a VSD or any brownfield assets within your factory shop floor and these components are compliant with OPC UA, you may use an OPC UA Server of your choice to connect to these industrial assets. This [next tutorial](/opcpublisher.md) provides you step-by-step on how to subscribe to the OPC UA nodes (which are tied to PLC tags) in the OPC UA Publisher, and publish the node values as a preset interval to Azure IoT Hub.
+If you have a PLC, a VSD or any brownfield assets within your factory shop floor and these components are compliant with OPC UA, you may use an OPC UA Server of your choice to connect to these industrial assets. This [next tutorial](/doc/opcpublisher.md) provides you step-by-step on how to subscribe to the OPC UA nodes (which are tied to PLC tags) in the OPC UA Publisher, and publish the node values as a preset interval to Azure IoT Hub.
