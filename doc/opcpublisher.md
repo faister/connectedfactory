@@ -8,7 +8,7 @@ These instructions will teach you how to simulate a shop floor environment consi
 
 ### Prerequisites
 
-1. Check if you have the latest .NET Core 2.x SDK installed by opening up a command prompt and enter this command:
+.1. Check if you have the latest .NET Core 2.x SDK installed by opening up a command prompt and enter this command:
 ```
 dotnet --version
 ```
@@ -27,10 +27,73 @@ If you don't have latest .NET Core 2.x SDK on your machine, install it from the 
 4. Git clone [OPC UA Publisher for Azure IoT Edge Git repo](https://github.com/Azure/iot-edge-opc-publisher.git)
 	
 5. Create an Azure IoT Hub in your own subscription. You can create a free tier if you like. Under Setttings -> Shared access policies, copy the iothubowner connection string - primary key. You need this connection string to connect the OPA UA Publisher to IoT Hub in the later steps.  
-	
-6. Install and Run the Prosys OPC UA Simulation Server. If the Windows Defender Firewall alert pops up, Allow all networks.
+	6. Install and Run the Prosys OPC UA Simulation Server. If the Windows Defender Firewall alert pops up, Allow all networks.
 
 7. In the status tab of Prosys OPC UA Simulation Server, copy the connection address (UA TCP). Copy this server connection address because you will need it to configure the OPC UA Publisher. For example, mine is:
 ```
 opc.tcp://xxxxxx:53530/OPCUA/SimulationServer
 ```
+
+### Running OPC UA Publisher
+
+1. Go to the folder in which you have extracted iot-edge-opc-publisher.zip. Go to iot-edge-opc-publisher\src\
+Note: We are not building a Docker container to make things simple. Besides the Azure IoT Edge architecture has changed a lot since the OPC UA Publisher IoT Edge module was published on GitHub.
+	
+2. Open a command prompt with elevated permission, (Run as Administrator). This step may take some time to run.
+```
+dotnet restore
+```
+
+3. Create a new folder named release under iot-edge-opc-publisher\src
+	
+4. Go back to your command prompt window, run the following:
+```
+dotnet publish --configuration Release --output release
+```	
+
+5. Go to the release folder.
+	
+6. Edit publishednodes.json with your favourite editor, i.e., Visual Studio Code.
+	
+7. Change the EndPointUrl with the one which you have copied in Step 7 from the Prosys OPC UA Simulation Server. Take note of the following in the OpcNodes
+```
+"ExpandedNodeId": "nsu=http://www.prosysopc.com/OPCUA/SimulationNodes;ns=5;s=Counter1",
+```
+This is for configuring the OPC UA Publisher IoT Edge module to subscribe to the simulated node. How do you know this is the right value? Go to the Prosys OPC UA Simulation Server, click the Address tab, expand Objects, then Simulation, click on Counter1. You see that the NodeID is ns=5;s=Counter1. However you do need to append the nsu property because this is the new OPC UA node ID format supported by the OPC UA Publisher.
+	
+
+8. Now we run the OPC UA Publisher IoT Edge module natively on Windows with the following command
+```
+dotnet OpcPublisher.dll <applicationname> [<iothubconnectionstring>] [options]
+````		
+
+9. The OPC UA security model is based upon certificates, trusted certs are placed in iot-edge-opc-publisher\src\release\CertificateStores\trusted\certs while rejected certs are in iot-edge-opc-publisher\src\release\CertificateStores\rejected\certs.
+	
+10. This is the first time you are connecting from the OPC UA Publisher to the Prosys OPC UA Simulation Server, you need to manually move the rejected cert into the trusted cert folder.
+	
+11. Hit Enter your console window because we need to rerun the OPC UA Publisher.
+	
+12. Rerun step 8
+	
+13. Now you will receive an error that looks like the following:
+
+Error establishing a connection: Error received from remote host: Bad_SecurityChecksFailed (code=0x80130000, description="An error occurred verifying security.")
+		
+14. Now you need to trust the OPC UA Publisher client certificate in the Prosys OPC UA Simulation Server. Go to the Certificates tab.
+	
+	
+15. My application name was sydpublisher and you can see the cert was rejected. Right-mouse click on the rejected cert, and click Trust.
+	
+16. Hit Enter your console window because we need to rerun the OPC UA Publisher.
+	
+17. The next step is to simulate some telemetry from the Prosys OPC UA Simulation Server. Go to the Simulation tab. On Counter1, tick Visualize. Click Counter1, and make sure you click Apply in the Node settings. You may change the parameters as you wish. 
+	
+18. In order to view telemetry ingested into IoT Hub, we need to use a tool such as the Device Explorer. Run and install SetupDeviceExplorer.msi.
+	
+19. Paste the iothubowner connection string which you had copied in Step 5 onto the IoT Hub Connection String textbox. Click Update.
+	
+20. Go to the Management tab. You would also see that the OPC UA Publisher application name you provided in Step 16 now appears as a device in IoT Hub.
+	
+21. Go to the Data tab. Select your device, and click Monitor. Can you see telemetry flowing off the IoT Hub?
+
+22. If the answer to Step 29 is No, tough luck! But are you going to give up? Hell NO! Time for some troubleshooting. Scroll down for more steps….
