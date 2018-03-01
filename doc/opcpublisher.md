@@ -29,3 +29,8 @@ If you don't have latest .NET Core 2.x SDK on your machine, install it from the 
 5. Create an Azure IoT Hub in your own subscription. You can create a free tier if you like. Under Setttings -> Shared access policies, copy the iothubowner connection string - primary key. You need this connection string to connect the OPA UA Publisher to IoT Hub in the later steps.  
 	
 6. Install and Run the Prosys OPC UA Simulation Server. If the Windows Defender Firewall alert pops up, Allow all networks.
+
+7. In the status tab of Prosys OPC UA Simulation Server, copy the connection address (UA TCP). Copy this server connection address because you will need it to configure the OPC UA Publisher. For example, mine is:
+```
+opc.tcp://xxxxxx:53530/OPCUA/SimulationServer
+```
