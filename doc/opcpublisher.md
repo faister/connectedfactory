@@ -4,7 +4,7 @@ This is tutorial is based on the [OPC UA Publisher for Azure IoT Edge](https://g
 
 ## Getting Started
 
-These instructions will teach you how to simulate a shop floor environment consisting of PLC tags which are plugged into an OPC UA Server. You will learn how to configure the OPC UA Publisher to subscribe to these OPC UA nodes and publish it to Azure IoT Hub. 
+This is a step-by-step guide on how to simulate a factory/site shop floor consisting of PLC tags which are connected into an OPC UA Server. Most OPC UA Servers have existing add-ins which allow a number of connectivity options such as Modbus over TCP, etc. You will learn how to configure the OPC UA Publisher to subscribe to these OPC UA nodes and publish it to Azure IoT Hub. 
 
 ### Prerequisites
 
@@ -16,17 +16,17 @@ dotnet --version
 If you don't have latest .NET Core 2.x SDK on your machine, install it from the [Microsoft .NET Core download site](https://www.microsoft.com/net/download/windows)
 	
 2. Download and install the following files onto your local machine:
-   * We are not recommending any particular vendor of an OPC UA Server, you still have you go through your own due diligence to select the right one for you based on your requirements. However in order for this tutorial to work out according to the instructions, we need to use an OPC UA Server, we are demonstaring this using the [Prosys OPC UA Simulation Server](https://www.prosysopc.com/products/opc-ua-simulation-server/). It is a multiplatform stand-alone OPC UA server that lets you configure your own simulation signals. You can request for a free download from their website. Alternatively [here is](https://scrapyard.blob.core.windows.net/share/prosys-opc-ua-simulation-server-2.3.2-146.exe) a cached copy of the installation file.
+   * We are not recommending any particular vendor of an OPC UA Server, you still have you go through your own due diligence to select the right one for you based on your requirements. However in order for this tutorial to work out according to the instructions, we need to use an OPC UA Server, we are demonstrating this using the [Prosys OPC UA Simulation Server](https://www.prosysopc.com/products/opc-ua-simulation-server/). It is a multiplatform stand-alone OPC UA server that lets you configure your own simulation signals. You can request for a free download from their website. Alternatively [here is](https://scrapyard.blob.core.windows.net/share/prosys-opc-ua-simulation-server-2.3.2-146.exe) a cached copy of the installation file.
    * Pre-compiled [OPC UA Client](https://scrapyard.blob.core.windows.net/share/OPCUA.Client.Net4.zip) from OPC Foundations's [OPC UA .Net Standard Stack and Samples](https://github.com/OPCFoundation/UA-.NETStandard)
    * Download and install the latest Device Explorer installer (SetupDeviceExplorer.msi) from the Azure IoT Device Client SDK for .NET from the [releases section](https://github.com/Azure/azure-iot-sdk-csharp/releases).
 	
-3. Extract OPCUA.Client.Net4.zip onto your local machine. More details on the OPC UA .NET Standard Library web page. Microsoft engineers contribute to this GitHub repo at https://github.com/OPCFoundation/UA-.NETStandardLibrary
+3. Extract OPCUA.Client.Net4.zip onto your local machine. More details on the OPC UA .NET Standard Library web page. Microsoft engineers as part of the contributors to this GitHub repo at https://github.com/OPCFoundation/UA-.NETStandardLibrary
 * After extracting the zip file onto your local machine, go to this folder path OPCUA.Client.Net4\Client.Net4\bin\Debug
 * Run this executable - Opc.Ua.SampleClient.exe. You will get a warning from the smart screen filter, run anyway.
 	
 4. Git clone [OPC UA Publisher for Azure IoT Edge Git repo](https://github.com/Azure/iot-edge-opc-publisher.git)
 	
-5. Create an Azure IoT Hub in your own subscription. You can create a free tier if you like. Under Setttings -> Shared access policies, copy the iothubowner connection string - primary key. You need this connection string to connect the OPA UA Publisher to IoT Hub in the later steps.  
+5. Create an Azure IoT Hub in your own subscription. You can create a free tier if you like but please be aware that there is a daily quota of messages ingested. Under Setttings -> Shared access policies, copy the iothubowner connection string - primary key. You need this connection string to connect the OPA UA Publisher to IoT Hub in the later steps.  
 
 6. Install and Run the Prosys OPC UA Simulation Server. If the Windows Defender Firewall alert pops up, Allow all networks.
 
@@ -54,7 +54,7 @@ dotnet publish --configuration Release --output release
 
 5. Go to the release folder.
 	
-6. Edit publishednodes.json with your favourite editor, i.e., Visual Studio Code.
+6. Edit publishednodes.json with your favourite editor, i.e., [Visual Studio Code](https://code.visualstudio.com/).
 	
 7. Change the EndPointUrl with the one which you have copied in Step 7 from the Prosys OPC UA Simulation Server. Take note of the following in the OpcNodes
 ```
@@ -68,9 +68,15 @@ This is for configuring the OPC UA Publisher IoT Edge module to subscribe to the
 dotnet OpcPublisher.dll <applicationname> [<iothubconnectionstring>] [options]
 ````		
 
+Typically I set a number of command line options, and I would create a batch file or shell script to run this task with those options.
+Please refer to [OPC UA Publisher command-line options](https://github.com/Azure/iot-edge-opc-publisher#running-the-application) for more options.
+
+
+
+
 9. The OPC UA security model is based upon certificates, trusted certs are placed in iot-edge-opc-publisher\src\release\CertificateStores\trusted\certs while rejected certs are in iot-edge-opc-publisher\src\release\CertificateStores\rejected\certs.
 	
-10. This is the first time you are connecting from the OPC UA Publisher to the Prosys OPC UA Simulation Server, you need to manually move the rejected cert into the trusted cert folder.
+10. This is the first time you are connecting from the OPC UA Publisher to the Prosys OPC UA Simulation Server, the cert is rejected by default. You need to manually move the rejected cert into the trusted cert folder.
 	
 11. Hit Enter your console window because we need to rerun the OPC UA Publisher.
 	
