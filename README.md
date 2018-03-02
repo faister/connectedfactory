@@ -1,5 +1,5 @@
 # Under the hood of an Azure IoT Suite Connected Factory pre-configured solution
-This is a step-by-step walkthrough of the Azure IoT Suite Connected Factory pre-configured solution allowing you to take a look at the services deployed under the hood.
+This is a step-by-step walkthrough of the Azure IoT Suite Connected Factory pre-configured solution (PCS) allowing you to take a look at the services deployed under the hood.
 
 ## Getting Started
 
@@ -19,10 +19,10 @@ This is a step-by-step walkthrough of the Azure IoT Suite Connected Factory pre-
 	
 4. Now the Connect button should be enabled. You should see the command you could use to establish an SSH session to your Linux VM. If you have Bash on Windows enabled run it. Otherwise use a tool like Putty. 
 	
-5. Take a look under the hood of the Docker containers created by the preconfigured solution. Run docker ps, you will see heaps of containers deployed and running. Each container representing a particular location (with IoT Edge OPC UA publisher and proxy modules, SCADA simulator, and MES simulator.
+5. Take a look under the hood of the Docker containers created by the preconfigured solution. Run docker ps, you will see heaps of containers deployed and running. Each container representing a particular factory location (with IoT Edge OPC UA publisher and proxy modules, SCADA simulator, and MES simulator.
 ![Containers](/doc/media/dockercontainers.png?raw=true "Containers")
 	
-When you do a ls, you can see shell scripts for startsimulation, stopsimulation and deletesimulation. You can also view config files, logs, and shared volume from the Docker containers. Muck around to create your new SCADA station, with its accompanying Azure IoT Edge proxy and publisher modules.
+When you do a ls, you can see shell scripts for startsimulation, stopsimulation and deletesimulation. You can also view config files, logs, and shared volume from the Docker containers. Muck around to create your new SCADA station, with its accompanying Azure IoT Edge proxy and publisher modules. You can refer to the startsimulation shell script to understand what command line parameters to use to create your own factory instances.
 	
 6. Learn about the size of the Docker containers. Run 
 ```
@@ -30,7 +30,7 @@ docker images
 ```
 ![images](/doc/media/dockerimages.png?raw=true "images")
 
-Some container images are pretty large especially for the OPC UA publisher module. This may require an industrial PC or a specialised IoT field gateway (physical hardware) with a capable processor, RAM, and storage. However you may also run this on a Raspberry Pi 3 for a PoC, just be conscious that the Docker images must be arm-hf ones.
+Some container images are pretty large especially for the OPC UA publisher module. If you are deploying the field gateway on-premises to connect industrial IoT controllers, this may require an industrial PC or a specialised IoT field gateway (physical hardware) with a capable processor, RAM, and storage. 
 
 ## OPC UA Integration
 
