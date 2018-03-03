@@ -1,6 +1,6 @@
 # Connecting OPC UA Publishers as leaf devices through an Azure IoT Edge Transparent Gateway
 
-This IoTtutorial provides you step-by-step instructions about how to setup and connect your OPC UA Publishers as leaf devices to an IoT Edge transparent gateway device.
+This tutorial provides you step-by-step instructions about how to setup and connect your OPC UA Publishers as leaf devices to an IoT Edge transparent gateway device.
 
 ## First steps
 
