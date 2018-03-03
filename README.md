@@ -41,15 +41,23 @@ This [next tutorial](/doc/opcpublisher.md) provides you step-by-step on how to s
 
 ## OPC UA Publishers as leaf devices through an Azure IoT Edge Transparent Gateway
 
-The current implementation of the OPC UA Publisher runs as either one of the following:
-* Runs natively as a .NET Core application connecting directly to Azure IoT Hub using its own identity
-* Runs as a module in an Azure IoT Edge device, with message routing to other modules (if needed). This is mostly an opaque gateway because each gateway instance has one IoT Edge device identity for authentication, and also potentially a device ID defined by the OPC UA Publisher module. However you need to develop a custom module that performs identity mapping and that's additional work. If you want to connect multiple OPC UA Publisher modules you can do so but there is a maximum number of modules which can be set for each Azure IoT Edge device (according to the current conditions within the Azure IoT Edge public preview).
+The current implementation of the OPC UA Publisher runs either as one of the following options:
+* Runs natively as a .NET Core application connecting directly to Azure IoT Hub using its own IoT Hub device identity
+* Runs as a module in an Azure IoT Edge device, with message routing to other modules (if needed). This is mostly an opaque gateway because each gateway instance has one IoT Edge device identity for authentication, and also potentially a device ID defined by the OPC UA Publisher module. However you need to develop a custom module that performs identity mapping/translation and that's additional work. If you want to connect multiple OPC UA Publisher modules you can do so but there is a maximum number of modules which can be set for each Azure IoT Edge device (currently there is a max of 10 modules under Azure IoT Edge public preview).
 
 To understand more about the purpose of gateways in IoT solutions, read [this Azure documentation article](https://docs.microsoft.com/en-us/azure/iot-edge/iot-edge-as-gateway) which explains 3 patterns for using IoT Edge device as a gateway; transparent, protocol translation and identity translation.
 
 There are good reasons for establishing each OPC UA Publisher as a leaf device of its own such as the following:
 * Logical separation of industrial IoT assets. You can identify each domain of the shopfloor and also enforce device ID authentication with Azure IoT Hub. This also allows you to define a device twin for each shopfloor domain. This creates a digital twin of the physical connected site and also enriches the digital plant models with metadata and also telemetry data associated with each sensor type. 
-* Each OPC UA Publisher either runs natively or runs as a module in its own IoT Edge device. Each OPC UA Publisher connects to an Azure IoT Edge transparent gateway. This results in each OPC UA Publisher having its own IoT Hub device identity. You would also stay away for hitting the limit on number of modules that could be deployed on each IoT Edge device. 
+* Each OPC UA Publisher either runs natively or runs as a module in its own IoT Edge device. Each OPC UA Publisher connects to an Azure IoT Edge transparent gateway. This results in each OPC UA Publisher having its own IoT Hub device identity. You could also avoid reaching the maximum number of modules that could be deployed on each IoT Edge device. 
 * You can develop/deploy other supported modules on the IoT Edge transparent gateway device such as [Azure Stream Analytics](https://docs.microsoft.com/en-us/azure/iot-edge/tutorial-deploy-stream-analytics), [Azure Functions](https://docs.microsoft.com/en-us/azure/iot-edge/tutorial-deploy-function) and [Azure Machine Learning](https://docs.microsoft.com/en-us/azure/iot-edge/tutorial-deploy-machine-learning) (operationalised ML model exposed as a web service on a container). You can also develop your own custom modules for doing edge processing tasks such as de-duplication, compression, encryption, [storing data at the edge](https://docs.microsoft.com/en-us/azure/iot-edge/sql-storage), etc. Hence all OPC UA Publisher instances (leaf devices) would send data to the transparent gateway and edge processing would be applied before ingestion in IoT Hub.
 
-* 
+* The [IoT Hub throttles and quotas](https://docs.microsoft.com/en-us/azure/iot-hub/iot-hub-devguide-quotas-throttling) apply to each device. Hence each OPC UA Publisher gets its own quota per IoT Hub device so as to speak. Subscribing to OPC nodes typically result in a lot of telemetry being ingested, multipled by the number of PLC/OPC tags, this quickly becomes a throttling issue if the quota is applied to one opaque IoT Edge gateway device. 
+
+* Proper segregation/separation in process control network (PCN). The OPC UA Publisher can run in a locked down PCN in which the OPC UA Server is also deployed. The Azure IoT Edge can either sit in a PCN DMZ network or within the enterprise/corporate network which has network connectivity. Azure IoT Edge only maintains an outbound connection to IoT Hub, which is a good security from the ground up, leaving your precious PCN completely unreachable from the public internet.
+
+* In the IoT Edge transparent gateway, all logical device conections are multiplex over one physical connection like AMQP.
+
+### Follow this tutorial
+
+This [IoT Edge transparent gateway tutorial](/doc/transparentgw.md) provides you step-by-step instructions about how to setup and connect your OPC UA Publishers as leaf devices to an IoT Edge transparent gateway device.
