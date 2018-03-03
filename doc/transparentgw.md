@@ -21,5 +21,5 @@ As a good hack lab challenge, you should not try this hack on first instance of 
 The default behaviour of the OPC UA Publisher is some IoT Hub operations and key handling such as to create a new device identity with IoT Hub (if one does not exist). However we want it to use an existing device ID.
 This can be done by setting an environment variable called EdgeHubConnectionString with the IoT Hub device ID connection string.
 
-I have created a simple batch file (which could be rewritten as a Shell script to run on Linux). ![RunOPCUAPublisherLeafDevice.bat](/script/RunOPCUAPublisherLeafDevice.bat)
+I have created a simple batch file (which could be rewritten as a Shell script to run on Linux). [RunOPCUAPublisherLeafDevice.bat](/script/RunOPCUAPublisherLeafDevice.bat)
 In the command line options, you will notice that I explicitly set the communication protocol with "IoT Hub" as Mqtt_Tcp_Only. The reason for this is because the IoT Edge transparent gateway runtime, edgeHub exposes an MQTT endpoint for receiving input messages.
