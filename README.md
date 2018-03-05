@@ -47,6 +47,9 @@ The current implementation of the OPC UA Publisher runs either as one of the fol
 
 To understand more about the purpose of gateways in IoT solutions, read [this Azure documentation article](https://docs.microsoft.com/en-us/azure/iot-edge/iot-edge-as-gateway) which explains 3 patterns for using IoT Edge device as a gateway; transparent, protocol translation and identity translation.
 
+### High-level Architecture
+![architecture](/doc/media/iotedgetransparentgw.JPG?raw=true "architecture")
+
 There are good reasons for establishing each OPC UA Publisher as a leaf device of its own such as the following:
 * Logical separation of industrial IoT assets. You can identify each domain of the shopfloor and also enforce device ID authentication with Azure IoT Hub. This also allows you to define a device twin for each shopfloor domain. This creates a digital twin of the physical connected site and also enriches the digital plant models with metadata and also telemetry data associated with each sensor type. 
 * Each OPC UA Publisher either runs natively or runs as a module in its own IoT Edge device. Each OPC UA Publisher connects to an Azure IoT Edge transparent gateway. This results in each OPC UA Publisher having its own IoT Hub device identity. You could also avoid reaching the maximum number of modules that could be deployed on each IoT Edge device. 
